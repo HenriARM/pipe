@@ -30,11 +30,13 @@ data["Individual_Price_US$"] = (
     data["Individual_Price_US$"].str.replace(",", "").astype(float)
 )
 
-# Sort by customer_id and Date for recency calculations
-data = data.sort_values(by=["Date"])
+data = data.sort_values(by=["customer_id", "Date"])
 
-duplicate_customers = data.groupby("customer_id").filter(lambda x: len(x) > 1)
-duplicate_customers = duplicate_customers.sort_values(by=["Date"])
+# set follow_up to 1 if the next purchase is within 60 days
+data["follow_up"] = data.groupby("customer_id")["Date"].shift(-1)
+data["follow_up"] = (data["follow_up"] - data["Date"]).dt.days <= 60
+data["follow_up"] = data["follow_up"].fillna(False).astype(int)
+
 
 # TODO: make some visualisations
 # - avg spendings per category
