@@ -14,14 +14,11 @@ if data["Transaction_id"].nunique() == data.shape[0]:
     data = data.drop(columns=["Transaction_id"])
 
 data["Date"] = pd.to_datetime(data["Date"], format="%d/%m/%Y")
-# TODO:
-# data["Year"] = data["Date"].dt.year
-# data["Month"] = data["Date"].dt.month
 
 if data["Year_Month"].equals(data["Date"].dt.strftime("%y-%b")):
     data = data.drop(columns=["Year_Month"])
 
-# TODO: write a comment here
+# "3,499" -> 3499
 data["Amount US$"] = data["Amount US$"].str.replace(",", "").astype(float)
 
 # Identify rows where 'Individual_Price_US$' has '#VALUE!' and replace using logic
@@ -39,10 +36,8 @@ data = data.sort_values(by=["Date"])
 duplicate_customers = data.groupby("customer_id").filter(lambda x: len(x) > 1)
 duplicate_customers = duplicate_customers.sort_values(by=["Date"])
 
-print(data.head())
-
 # TODO: make some visualisations
-# - avg spendings per  category
+# - avg spendings per category
 # - most spending states
 # ...
 
